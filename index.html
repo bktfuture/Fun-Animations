@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fun Animation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <section class="dashboard">
+      <h2>Animation Controls</h2>
+
+      <div class="control-row">
+        <label class="control" for="bg-color">
+          background
+          <input type="color" id="bg-color" value="#adb5bd" />
+        </label>
+
+        <label class="control" for="particle-color">
+          particle color
+          <input type="color" id="particle-color" value="#5e548e" />
+        </label>
+
+        <label class="control" for="randomize">
+          random
+          <button type="button" id="randomize">generate</button>
+        </label>
+      </div>
+
+      <label class="control" for="shape">
+        particle shape
+        <select id="shape">
+          <option value="dot">dots</option>
+          <option value="square">squares</option>
+          <option value="heart">hearts</option>
+          <option value="star">stars</option>
+        </select>
+      </label>
+
+      <div class="control behavior-row">
+        <label>animation behavior</label>
+        <div class="behavior-options">
+          <label class="behavior-option">
+            <input type="radio" name="animation-behavior" value="swarm" checked />
+            swarm
+          </label>
+          <label class="behavior-option">
+            <input type="radio" name="animation-behavior" value="planetsystem" />
+            saturn
+          </label>
+          <label class="behavior-option">
+            <input type="radio" name="animation-behavior" value="infinity" />
+            infinity
+          </label>
+          <label class="behavior-option">
+            <input type="radio" name="animation-behavior" value="lissajous" />
+            lissajous
+          </label>
+
+          <label class="behavior-option">
+            <input type="radio" name="animation-behavior" value="rainumbrella" />
+            rain
+          </label>
+          <label class="behavior-option">
+            <input type="radio" name="animation-behavior" value="lifeline" />
+            lifeline
+          </label>
+          <label class="behavior-option">
+            <input type="radio" name="animation-behavior" value="swarmhug" />
+            hug
+          </label>
+          <label class="behavior-option">
+            <input type="radio" name="animation-behavior" value="vortex" />
+            vortex
+          </label>
+          <label class="behavior-option">
+            <input type="radio" name="animation-behavior" value="galaxy" />
+            galaxy
+          </label>
+          <label class="behavior-option">
+            <input type="radio" name="animation-behavior" value="pulsar" />
+            pulsar
+          </label>
+          <label class="behavior-option">
+            <input type="radio" name="animation-behavior" value="petalbloom" />
+            petal bloom
+          </label>
+          <label class="behavior-option">
+            <input type="radio" name="animation-behavior" value="candyspiral" />
+            candy spiral
+          </label>
+        </div>
+      </div>
+
+      <div class="control animal-shape-row">
+        <label>animal animations</label>
+        <div class="animal-shape-buttons">
+          <button type="button" id="shape-bird">bird</button>
+          <button type="button" id="shape-fish">fish</button>
+          <button type="button" id="shape-rabbit">rabbit</button>
+        </div>
+      </div>
+
+      <label class="control" for="particle-size">
+        particle size <span id="particle-size-value">4px</span>
+        <input
+          type="range"
+          id="particle-size"
+          min="2"
+          max="20"
+          step="1"
+          value="4"
+        />
+      </label>
+
+      <label class="control" for="particle-speed">
+        particle speed <span id="particle-speed-value">1.0x</span>
+        <input
+          type="range"
+          id="particle-speed"
+          min="0.4"
+          max="2.5"
+          step="0.1"
+          value="1.0"
+        />
+      </label>
+
+      <label class="control" for="particle-count">
+        particle count <span id="particle-count-value">2500</span>
+        <input
+          type="range"
+          id="particle-count"
+          min="500"
+          max="4000"
+          step="100"
+          value="2500"
+        />
+      </label>
+
+      <div class="control word-row">
+        <label for="word-input">word</label>
+        <div class="word-input-row">
+          <input type="text" id="word-input" maxlength="36" placeholder="type a word" />
+          <button type="button" id="apply-word">apply</button>
+          <button type="button" id="book-word">book line</button>
+        </div>
+      </div>
+
+    </section>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
