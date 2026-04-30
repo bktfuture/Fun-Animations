@@ -99,43 +99,34 @@ body[data-shape="rabbit"] .particle {
 
 .dashboard {
   position: fixed;
-  top: 20px;
+  top: clamp(12px, 2.5vh, 20px);
   left: 20px;
   z-index: 10;
   width: min(250px, calc(100vw - 40px));
+  max-height: calc(100vh - 40px);
   padding: 14px;
   border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.55);
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(14px) saturate(1.15);
   box-shadow: 0 12px 40px rgba(10, 10, 10, 0.16);
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
 }
 
-.export-panel {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  z-index: 10;
-  width: min(250px, calc(100vw - 40px));
-  padding: 14px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(14px) saturate(1.15);
-  box-shadow: 0 12px 40px rgba(10, 10, 10, 0.16);
+.dashboard-header {
+  flex: 0 0 auto;
+  padding: 0 0 12px 0;
+}
+
+.dashboard-controls {
+  width: 100%;
+  margin-inline: auto;
 }
 
 .dashboard h2 {
-  margin: 0 0 12px 0;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  color: #111827;
-  text-align: center;
-}
-
-.export-panel h2 {
-  margin: 0 0 12px 0;
+  margin: 0;
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.01em;
@@ -244,6 +235,24 @@ body[data-shape="rabbit"] .particle {
   grid-template-columns: 1fr 1fr 1fr;
   gap: 8px;
   align-items: center;
+}
+
+.export-card {
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(17, 24, 39, 0.12);
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+.export-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #1e3a8a;
+  text-align: center;
 }
 
 #export-status {
