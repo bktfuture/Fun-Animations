@@ -613,7 +613,7 @@ const setSwarmMode = () => {
   animalMode = false;
 };
 const setStatus = message => {
-  if (exportStatus) exportStatus.textContent = message;
+  if (exportStatus) exportStatus.textContent = `export status: ${message}`;
 };
 const withDashboardHidden = async callback => {
   const overlays = Array.from(document.querySelectorAll('.dashboard, .export-panel'));
@@ -1015,3 +1015,5 @@ if (exportGifButton) {
 if (exportPresetButton) {
   exportPresetButton.addEventListener('click', exportPreset);
 }
+
+setStatus('ready to go!');

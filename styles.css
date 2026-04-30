@@ -247,9 +247,12 @@ body[data-shape="rabbit"] .particle {
 }
 
 #export-status {
+  display: block;
+  width: 100%;
   font-size: 11px;
   color: #374151;
   min-height: 14px;
+  text-align: center;
 }
 
 .animal-row {
