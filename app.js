@@ -3,6 +3,8 @@ import {
   stagger,
   utils,
 } from 'https://esm.sh/animejs';
+import html2canvas from 'https://esm.sh/html2canvas@1.4.1';
+import gifshot from 'https://esm.sh/gifshot@0.4.5';
 
 const { random, cos, sin, sqrt, PI, abs } = Math;
 const maxParticleCount = 4000;
@@ -41,6 +43,10 @@ const randomizeButton = document.querySelector('#randomize');
 const wordInput = document.querySelector('#word-input');
 const applyWordButton = document.querySelector('#apply-word');
 const bookWordButton = document.querySelector('#book-word');
+const exportPngButton = document.querySelector('#export-png');
+const exportGifButton = document.querySelector('#export-gif');
+const exportPresetButton = document.querySelector('#export-preset');
+const exportStatus = document.querySelector('#export-status');
 const minParticleSize = 2;
 const maxParticleSize = 20;
 const defaultParticleSize = 4;
@@ -606,6 +612,53 @@ const setSwarmMode = () => {
   wordMode = false;
   animalMode = false;
 };
+const setStatus = message => {
+  if (exportStatus) exportStatus.textContent = message;
+};
+const withDashboardHidden = async callback => {
+  const overlays = Array.from(document.querySelectorAll('.dashboard, .export-panel'));
+  const previousVisibility = overlays.map(node => node.style.visibility);
+  overlays.forEach(node => {
+    node.style.visibility = 'hidden';
+  });
+  try {
+    return await callback();
+  } finally {
+    overlays.forEach((node, index) => {
+      node.style.visibility = previousVisibility[index];
+    });
+  }
+};
+const captureSceneCanvas = () => (
+  withDashboardHidden(() => html2canvas(document.body, {
+    backgroundColor: null,
+    useCORS: true,
+    logging: false,
+    scale: window.devicePixelRatio > 1 ? 1 : window.devicePixelRatio,
+  }))
+);
+const triggerDownload = (href, filename) => {
+  const anchor = document.createElement('a');
+  anchor.href = href;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+};
+const getPresetState = () => ({
+  version: 1,
+  bgColor: bgColorInput?.value || '#b8dbff',
+  particleColor: particleColorInput?.value || '#5e548e',
+  particleSize: Number(particleSizeInput?.value || defaultParticleSize),
+  particleSpeed: Number(particleSpeedInput?.value || 1),
+  particleCount: activeParticleCount,
+  behaviorMode,
+  shape: document.body.dataset.shape || 'dot',
+  wordText: wordInput?.value || '',
+  wordMode,
+  animalMode,
+  currentAnimalType,
+});
 
 const setActiveParticleCount = value => {
   activeParticleCount = clamp(Math.round(value), 500, maxParticleCount);
@@ -754,20 +807,20 @@ if (behaviorInputs.length > 0) {
   });
 }
 
-const setParticleShape = shape => {
+function setParticleShape(shape) {
   document.body.dataset.shape = shape;
   if (shapeInput && ['dot', 'square', 'heart', 'star'].includes(shape)) {
     shapeInput.value = shape;
   }
-};
-const setBehaviorMode = mode => {
+}
+function setBehaviorMode(mode) {
   behaviorMode = mode;
   if (behaviorInputs.length > 0) {
     behaviorInputs.forEach(input => {
       input.checked = input.value === mode;
     });
   }
-};
+}
 
 if (shapeBirdButton) {
   shapeBirdButton.addEventListener('click', () => setParticleShape('bird'));
@@ -873,6 +926,66 @@ const applyWord = () => {
   }
 };
 
+const exportPng = async () => {
+  setStatus('capturing png...');
+  try {
+    const canvas = await captureSceneCanvas();
+    triggerDownload(canvas.toDataURL('image/png'), `fun-animation-${Date.now()}.png`);
+    setStatus('png exported');
+  } catch (error) {
+    setStatus('png export failed');
+    // eslint-disable-next-line no-console
+    console.error(error);
+  }
+};
+
+const exportGif = async () => {
+  const frameCount = 24;
+  const frameDelayMs = 90;
+  const capturedFrames = [];
+
+  setStatus('capturing gif frames...');
+  try {
+    for (let i = 0; i < frameCount; i++) {
+      // Let animation continue naturally; each frame captures current visual state.
+      // eslint-disable-next-line no-await-in-loop
+      const canvas = await captureSceneCanvas();
+      capturedFrames.push(canvas.toDataURL('image/png'));
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise(resolve => setTimeout(resolve, frameDelayMs));
+      setStatus(`capturing gif frames... ${i + 1}/${frameCount}`);
+    }
+
+    setStatus('encoding gif...');
+    gifshot.createGIF({
+      images: capturedFrames,
+      interval: frameDelayMs / 1000,
+      gifWidth: window.innerWidth,
+      gifHeight: window.innerHeight,
+    }, obj => {
+      if (!obj.error && obj.image) {
+        triggerDownload(obj.image, `fun-animation-${Date.now()}.gif`);
+        setStatus('gif exported');
+        return;
+      }
+      setStatus('gif export failed');
+    });
+  } catch (error) {
+    setStatus('gif export failed');
+    // eslint-disable-next-line no-console
+    console.error(error);
+  }
+};
+
+const exportPreset = () => {
+  const state = getPresetState();
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  triggerDownload(url, `fun-animation-preset-${Date.now()}.json`);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  setStatus('preset exported');
+};
+
 if (applyWordButton) {
   applyWordButton.addEventListener('click', applyWord);
 }
@@ -889,4 +1002,16 @@ if (wordInput) {
   wordInput.addEventListener('keydown', event => {
     if (event.key === 'Enter') applyWord();
   });
+}
+
+if (exportPngButton) {
+  exportPngButton.addEventListener('click', exportPng);
+}
+
+if (exportGifButton) {
+  exportGifButton.addEventListener('click', exportGif);
+}
+
+if (exportPresetButton) {
+  exportPresetButton.addEventListener('click', exportPreset);
 }
