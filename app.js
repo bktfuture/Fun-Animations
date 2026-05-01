@@ -616,7 +616,9 @@ const setStatus = message => {
   if (exportStatus) exportStatus.textContent = `export status: ${message}`;
 };
 const withDashboardHidden = async callback => {
-  const overlays = Array.from(document.querySelectorAll('.dashboard, .export-panel'));
+  const overlays = Array.from(document.querySelectorAll(
+    '.dashboard, .export-panel, .mobile-controls-fab, .dashboard-backdrop',
+  ));
   const previousVisibility = overlays.map(node => node.style.visibility);
   overlays.forEach(node => {
     node.style.visibility = 'hidden';
@@ -1015,5 +1017,79 @@ if (exportGifButton) {
 if (exportPresetButton) {
   exportPresetButton.addEventListener('click', exportPreset);
 }
+
+const MOBILE_LAYOUT_MAX_PX = 640;
+const mobileLayoutQuery = window.matchMedia(`(max-width: ${MOBILE_LAYOUT_MAX_PX}px)`);
+const dashboardPanel = document.querySelector('.dashboard');
+const mobileControlsFab = document.querySelector('#mobile-controls-fab');
+const dashboardCloseButton = document.querySelector('#dashboard-close');
+const dashboardBackdrop = document.querySelector('#dashboard-backdrop');
+
+const isMobileControlsLayout = () => mobileLayoutQuery.matches;
+
+const syncMobileLayoutMode = () => {
+  const mobile = isMobileControlsLayout();
+  document.documentElement.classList.toggle('layout-mobile-controls', mobile);
+  if (!mobile) {
+    document.body.classList.remove('mobile-dashboard-open');
+    dashboardPanel?.classList.remove('is-open');
+    if (dashboardBackdrop) {
+      dashboardBackdrop.hidden = true;
+      dashboardBackdrop.classList.remove('is-visible');
+      dashboardBackdrop.setAttribute('aria-hidden', 'true');
+    }
+    if (mobileControlsFab) mobileControlsFab.setAttribute('aria-expanded', 'false');
+  }
+};
+
+const setMobileDashboardOpen = open => {
+  if (!document.documentElement.classList.contains('layout-mobile-controls')) {
+    document.body.classList.remove('mobile-dashboard-open');
+    dashboardPanel?.classList.remove('is-open');
+    if (dashboardBackdrop) {
+      dashboardBackdrop.hidden = true;
+      dashboardBackdrop.classList.remove('is-visible');
+      dashboardBackdrop.setAttribute('aria-hidden', 'true');
+    }
+    if (mobileControlsFab) mobileControlsFab.setAttribute('aria-expanded', 'false');
+    return;
+  }
+  dashboardPanel?.classList.toggle('is-open', open);
+  document.body.classList.toggle('mobile-dashboard-open', open);
+  if (dashboardBackdrop) {
+    dashboardBackdrop.hidden = !open;
+    dashboardBackdrop.classList.toggle('is-visible', open);
+    dashboardBackdrop.setAttribute('aria-hidden', open ? 'false' : 'true');
+  }
+  if (mobileControlsFab) mobileControlsFab.setAttribute('aria-expanded', String(open));
+};
+
+syncMobileLayoutMode();
+window.addEventListener('resize', syncMobileLayoutMode);
+if (typeof mobileLayoutQuery.addEventListener === 'function') {
+  mobileLayoutQuery.addEventListener('change', syncMobileLayoutMode);
+} else if (typeof mobileLayoutQuery.addListener === 'function') {
+  mobileLayoutQuery.addListener(syncMobileLayoutMode);
+}
+
+if (mobileControlsFab) {
+  mobileControlsFab.addEventListener('click', () => setMobileDashboardOpen(true));
+}
+if (dashboardCloseButton) {
+  dashboardCloseButton.addEventListener('click', () => setMobileDashboardOpen(false));
+}
+if (dashboardBackdrop) {
+  dashboardBackdrop.addEventListener('click', () => setMobileDashboardOpen(false));
+}
+
+document.addEventListener('keydown', event => {
+  if (event.key !== 'Escape') return;
+  if (
+    document.documentElement.classList.contains('layout-mobile-controls')
+    && dashboardPanel?.classList.contains('is-open')
+  ) {
+    setMobileDashboardOpen(false);
+  }
+});
 
 setStatus('ready to go!');

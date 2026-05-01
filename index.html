@@ -11,11 +11,23 @@
       href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap"
     />
     <link rel="stylesheet" href="./styles.css" />
+    <script>
+      (function () {
+        var q = window.matchMedia('(max-width: 640px)');
+        document.documentElement.classList.toggle('layout-mobile-controls', q.matches);
+      })();
+    </script>
   </head>
   <body>
-    <section class="dashboard">
+    <button type="button" class="mobile-controls-fab" id="mobile-controls-fab" aria-expanded="false" aria-controls="animation-dashboard">
+      controls
+    </button>
+    <div class="dashboard-backdrop" id="dashboard-backdrop" hidden aria-hidden="true"></div>
+
+    <section class="dashboard" id="animation-dashboard" aria-label="Animation controls panel">
       <div class="dashboard-header">
         <h2>Animation Controls</h2>
+        <button type="button" class="dashboard-close" id="dashboard-close" aria-label="Close controls">✕</button>
       </div>
 
       <div class="dashboard-controls">

@@ -118,6 +118,93 @@ body[data-shape="rabbit"] .particle {
 .dashboard-header {
   flex: 0 0 auto;
   padding: 0 0 12px 0;
+  position: relative;
+}
+
+.dashboard-close {
+  display: none !important;
+  visibility: hidden;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid rgba(17, 24, 39, 0.14);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #374151;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  font-family: inherit;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard-close:hover {
+  border-color: rgba(17, 24, 39, 0.22);
+}
+
+.dashboard-close:focus-visible {
+  outline: none;
+  border-color: #111827;
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.12);
+}
+
+.mobile-controls-fab {
+  display: none !important;
+  visibility: hidden;
+  pointer-events: none;
+  position: fixed;
+  z-index: 11;
+  left: max(12px, env(safe-area-inset-left, 0px));
+  top: max(12px, env(safe-area-inset-top, 0px));
+  width: max-content;
+  max-width: calc(100vw - 24px);
+  padding: 0 12px;
+  height: 36px;
+  box-sizing: border-box;
+  border: 1px solid rgba(17, 24, 39, 0.14);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 6px 20px rgba(10, 10, 10, 0.12);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #111827;
+  text-transform: lowercase;
+  white-space: nowrap;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-controls-fab:hover {
+  border-color: rgba(17, 24, 39, 0.22);
+}
+
+.mobile-controls-fab:focus-visible {
+  outline: none;
+  border-color: #111827;
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.12);
+}
+
+.dashboard-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9;
+  background: rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(2px);
+}
+
+.dashboard-backdrop.is-visible {
+  display: block;
 }
 
 .dashboard-controls {
@@ -188,6 +275,75 @@ body[data-shape="rabbit"] .particle {
     grid-template-columns: 1fr;
     gap: 0;
   }
+}
+
+/* Mobile sheet: toggled via html.layout-mobile-controls (matchMedia max-width 640px). */
+html.layout-mobile-controls .mobile-controls-fab {
+  display: inline-flex !important;
+  visibility: visible;
+  pointer-events: auto;
+  align-items: center;
+  justify-content: center;
+}
+
+html.layout-mobile-controls .dashboard-close {
+  display: inline-flex !important;
+  visibility: visible;
+  pointer-events: auto;
+  position: static;
+  transform: none;
+  flex-shrink: 0;
+}
+
+html.layout-mobile-controls .dashboard {
+  left: 12px;
+  right: 12px;
+  width: auto;
+  max-width: none;
+  max-height: min(85vh, calc(100dvh - 24px));
+  transform: translateX(calc(-100% - 24px));
+  transition: transform 0.28s ease;
+  z-index: 10;
+}
+
+html.layout-mobile-controls .dashboard.is-open {
+  transform: translateX(0);
+}
+
+html.layout-mobile-controls .dashboard-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding-right: 0;
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  margin: -14px -14px 10px -14px;
+  padding: 12px 14px;
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+html.layout-mobile-controls .dashboard-header h2 {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+
+html.layout-mobile-controls body.mobile-dashboard-open .mobile-controls-fab {
+  opacity: 0;
+  pointer-events: none;
+}
+
+html:not(.layout-mobile-controls) .dashboard-backdrop {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+html:not(.layout-mobile-controls) .dashboard-backdrop.is-visible {
+  display: none !important;
 }
 
 .control select {
